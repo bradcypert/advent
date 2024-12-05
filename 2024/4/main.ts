@@ -56,42 +56,40 @@ function part1(input: string) {
   return count;
 }
 
-function isXMAS(grid: Array<Array<string>>, row: number, column: number) {
-  const rowCount = grid.length;
-  const colCount = grid[0].length;
-  const validMovements: Array<Array<[number, number, string]>> = [
-    [
-      [0, -1, "M"],
-      [0, 1, "S"],
-      [-1, 0, "A"],
-      [-1, -2, "S"],
-      [1, 0, "A"],
-      [1, 2, "M"],
-    ],
-    [
-      [0, -1, "S"],
-      [0, 1, "M"],
-      [-1, 0, "A"],
-      [-1, -2, "M"],
-      [1, 0, "A"],
-      [1, 2, "S"],
-    ],
-  ];
+function isXMAS(
+    grid: Array<Array<string>>,
+    row: number,
+    column: number
+  ) {
+    
+    if (grid[row][column] === "A") {
 
-  return validMovements.some((movement) =>
-    movement.every(([movementRow, movementColumn, letter]) => {
-      const nextRow = row + movementRow;
-      const nextColumn = column + movementColumn;
-      return (
-        nextRow >= 0 &&
-        nextColumn >= 0 &&
-        nextRow < rowCount &&
-        nextColumn < colCount &&
-        grid[nextRow][nextColumn] === letter
-      );
-    })
-  );
-}
+        // M   M
+        //   A  
+        // S   S 
+        const upperRight = grid[row-1][column+1];
+        const upperLeft = grid[row-1][column-1];
+        const lowerRight = grid[row+1][column+1];
+        const lowerLeft = grid[row+1][column-1];
+        let rtl = false;
+        let ltr = false;
+        if (upperRight == "M" && lowerLeft == "S") {
+            rtl = true;
+        } else if (upperRight == "S" && lowerLeft == "M") {
+            rtl = true;
+        }
+
+        if (upperLeft == "M" && lowerRight == "S") {
+            ltr = true;
+        } else if (upperLeft == "S" && lowerRight == "M") {
+            ltr = true;
+        }
+
+        return ltr && rtl;
+    }
+  
+    return false;
+  }
 
 // TODO: THIS IS NOT CORRECT
 function part2(input: string) {
